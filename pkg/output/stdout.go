@@ -15,15 +15,8 @@ import (
 )
 
 const (
-	BANNER_HEADER = `
-        /'___\  /'___\           /'___\       
-       /\ \__/ /\ \__/  __  __  /\ \__/       
-       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\      
-        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/      
-         \ \_\   \ \_\  \ \____/  \ \_\       
-          \/_/    \/_/   \/___/    \/_/       
-`
-	BANNER_SEP = "________________________________________________"
+	BANNER_HEADER = ""
+	BANNER_SEP = ""
 )
 
 type Stdoutput struct {
@@ -47,97 +40,7 @@ func NewStdoutput(conf *ffuf.Config) *Stdoutput {
 }
 
 func (s *Stdoutput) Banner() {
-	version := strings.ReplaceAll(ffuf.Version(), "<3", fmt.Sprintf("%s<3%s", ANSI_RED, ANSI_CLEAR))
-	fmt.Fprintf(os.Stderr, "%s\n       v%s\n%s\n\n", BANNER_HEADER, version, BANNER_SEP)
-	printOption([]byte("Method"), []byte(s.config.Method))
-	printOption([]byte("URL"), []byte(s.config.Url))
 
-	// Print wordlists
-	for _, provider := range s.config.InputProviders {
-		if provider.Name == "wordlist" {
-			printOption([]byte("Wordlist"), []byte(provider.Keyword+": "+provider.Value))
-		}
-	}
-
-	// Print headers
-	if len(s.config.Headers) > 0 {
-		for k, v := range s.config.Headers {
-			printOption([]byte("Header"), []byte(fmt.Sprintf("%s: %s", k, v)))
-		}
-	}
-	// Print POST data
-	if len(s.config.Data) > 0 {
-		printOption([]byte("Data"), []byte(s.config.Data))
-	}
-
-	// Print extensions
-	if len(s.config.Extensions) > 0 {
-		exts := ""
-		for _, ext := range s.config.Extensions {
-			exts = fmt.Sprintf("%s%s ", exts, ext)
-		}
-		printOption([]byte("Extensions"), []byte(exts))
-	}
-
-	// Output file info
-	if len(s.config.OutputFile) > 0 {
-
-		// Use filename as specified by user
-		OutputFile := s.config.OutputFile
-
-		if s.config.OutputFormat == "all" {
-			// Actually... append all extensions
-			OutputFile += ".{json,ejson,html,md,csv,ecsv}"
-		}
-
-		printOption([]byte("Output file"), []byte(OutputFile))
-		printOption([]byte("File format"), []byte(s.config.OutputFormat))
-	}
-
-	// Follow redirects?
-	follow := fmt.Sprintf("%t", s.config.FollowRedirects)
-	printOption([]byte("Follow redirects"), []byte(follow))
-
-	// Autocalibration
-	autocalib := fmt.Sprintf("%t", s.config.AutoCalibration)
-	printOption([]byte("Calibration"), []byte(autocalib))
-
-	// Proxies
-	if len(s.config.ProxyURL) > 0 {
-		printOption([]byte("Proxy"), []byte(s.config.ProxyURL))
-	}
-	if len(s.config.ReplayProxyURL) > 0 {
-		printOption([]byte("ReplayProxy"), []byte(s.config.ReplayProxyURL))
-	}
-
-	// Timeout
-	timeout := fmt.Sprintf("%d", s.config.Timeout)
-	printOption([]byte("Timeout"), []byte(timeout))
-
-	// Threads
-	threads := fmt.Sprintf("%d", s.config.Threads)
-	printOption([]byte("Threads"), []byte(threads))
-
-	// Delay?
-	if s.config.Delay.HasDelay {
-		delay := ""
-		if s.config.Delay.IsRange {
-			delay = fmt.Sprintf("%.2f - %.2f seconds", s.config.Delay.Min, s.config.Delay.Max)
-		} else {
-			delay = fmt.Sprintf("%.2f seconds", s.config.Delay.Min)
-		}
-		printOption([]byte("Delay"), []byte(delay))
-	}
-
-	// Print matchers
-	for _, f := range s.config.MatcherManager.GetMatchers() {
-		printOption([]byte("Matcher"), []byte(f.ReprVerbose()))
-	}
-	// Print filters
-	for _, f := range s.config.MatcherManager.GetFilters() {
-		printOption([]byte("Filter"), []byte(f.ReprVerbose()))
-	}
-	fmt.Fprintf(os.Stderr, "%s\n\n", BANNER_SEP)
 }
 
 // Reset resets the result slice
